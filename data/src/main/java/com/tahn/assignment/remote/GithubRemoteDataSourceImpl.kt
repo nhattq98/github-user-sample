@@ -1,10 +1,10 @@
 package com.tahn.assignment.remote
 
 import com.tahn.assignment.model.remote.GithubUserResponse
-import com.tahn.assignment.remote.api.GithubApi
+import com.tahn.assignment.remote.api.GithubApiService
 
 class GithubRemoteDataSourceImpl(
-    private val api: GithubApi,
+    private val api: GithubApiService,
 ) : GithubRemoteDataSource {
     override suspend fun fetchUsers(
         perPage: Int,

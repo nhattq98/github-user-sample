@@ -59,7 +59,8 @@ dependencies {
     implementation(libs.androidx.room.ktx) // Kotlin Extensions for Coroutines
 
     // Koin
-    implementation(libs.koin.bom)
+//    implementation(libs.koin.bom)
+    implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
 
