@@ -19,6 +19,22 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
+    flavorDimensions += "environment"
+
+    productFlavors {
+        create("dev") {
+            buildConfigField("String", "FLAVOR", "\"dev\"")
+        }
+
+        create("prod") {
+            buildConfigField("String", "FLAVOR", "\"prod\"")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -44,6 +60,11 @@ dependencies {
     implementation(project(":feature"))
     implementation(project(":domain"))
     implementation(project(":data"))
+
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
 
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)

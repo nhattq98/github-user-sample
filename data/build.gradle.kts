@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("com.google.devtools.ksp") version "2.1.21-2.0.1"
+    id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 }
 
 android {
@@ -15,7 +15,28 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
+    flavorDimensions += "environment"
+
+    productFlavors {
+        create("dev") {
+            buildConfigField("String", "BASE_URL", "\"https://api.github.com\"")
+            buildConfigField("String", "FLAVOR", "\"dev\"")
+        }
+
+        create("prod") {
+            buildConfigField("String", "BASE_URL", "\"https://api.github.com\"")
+            buildConfigField("String", "FLAVOR", "\"prod\"")
+        }
+    }
+
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -24,10 +45,12 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
@@ -50,27 +73,22 @@ dependencies {
     implementation(libs.logging.interceptor)
 
     // Room
-    // Room components
-    val room_version = "2.6.1" // Use the latest stable Room version
-
     implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler) // For Java/Kotlin (KAPT)
-    ksp(libs.androidx.room.compiler) // For Kotlin (KSP) - use this one!
-    implementation(libs.androidx.room.ktx) // Kotlin Extensions for Coroutines
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     // Koin
-//    implementation(libs.koin.bom)
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
 
     // Paging
-//    implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.room.paging)
 
     // Data Store
-    implementation("androidx.datastore:datastore-preferences:1.1.7")
+    implementation(libs.androidx.datastore.preferences)
 
+    // Unit test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

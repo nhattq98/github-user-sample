@@ -1,7 +1,11 @@
 package com.tahn.assignment.di
 
+import com.tahn.assignment.usecase.GetGithubUsersPagingUseCase
 import org.koin.dsl.module
 
-val domainModules =
+val useCaseModules =
     module {
+        single {
+            GetGithubUsersPagingUseCase(get())
+        }
     }

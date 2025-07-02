@@ -7,8 +7,9 @@ import androidx.room.RoomDatabase
 import com.tahn.assignment.local.database.dao.GithubUserDao
 import com.tahn.assignment.local.database.dao.GithubUserRemoteKeyDao
 import com.tahn.assignment.local.database.entity.GithubUserEntity
+import com.tahn.assignment.local.database.entity.GithubUserRemoteKeyEntity
 
-@Database(entities = [GithubUserEntity::class], version = 1)
+@Database(entities = [GithubUserEntity::class, GithubUserRemoteKeyEntity::class], version = 1)
 internal abstract class AppDatabase : RoomDatabase() {
     abstract fun githubUserDao(): GithubUserDao
 

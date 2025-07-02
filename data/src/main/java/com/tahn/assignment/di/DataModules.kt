@@ -4,7 +4,12 @@ import com.tahn.assignment.dispatcher.DispatcherProvider
 import com.tahn.assignment.local.database.AppDatabase
 import com.tahn.assignment.local.datastore.PreferencesDataStoreManager
 import com.tahn.assignment.provider.DispatcherProviderImpl
+import com.tahn.assignment.remote.GithubRemoteDataSource
+import com.tahn.assignment.remote.GithubRemoteDataSourceImpl
 import com.tahn.assignment.remote.api.NetworkBuilder
+import com.tahn.assignment.repository.GithubUserRepository
+import com.tahn.assignment.repository.GithubUserRepositoryImpl
+import com.tahn.assignment.utils.FlavorUtils
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -16,10 +21,13 @@ private val dispatcherModule =
 private val remoteModule =
     module {
         single {
-            NetworkBuilder.buildOkHttpClient(isDebug = true)
+            NetworkBuilder.buildOkHttpClient(isDebug = FlavorUtils.isDebug)
         }
         single {
             NetworkBuilder.buildService(get())
+        }
+        single<GithubRemoteDataSource> {
+            GithubRemoteDataSourceImpl(get())
         }
     }
 
@@ -33,7 +41,12 @@ private val localModule =
         }
     }
 
+private val repositoryModule =
+    module {
+        single<GithubUserRepository> { GithubUserRepositoryImpl(get(), get(), get()) }
+    }
+
 val dataModules =
     module {
-        includes(dispatcherModule, remoteModule, localModule)
+        includes(dispatcherModule, remoteModule, localModule, repositoryModule)
     }
