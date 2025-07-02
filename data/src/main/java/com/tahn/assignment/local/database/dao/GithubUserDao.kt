@@ -10,7 +10,7 @@ import com.tahn.assignment.local.database.entity.GithubUserEntity
 @Dao
 internal interface GithubUserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(users: List<GithubUserEntity>)
+    suspend fun insertUsers(users: List<GithubUserEntity>)
 
     @Query("SELECT * FROM github_users ORDER BY id ASC")
     fun getUserPagingSource(): PagingSource<Int, GithubUserEntity>

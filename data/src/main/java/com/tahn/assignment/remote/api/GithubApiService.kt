@@ -7,7 +7,7 @@ import retrofit2.http.Query
 interface GithubApiService {
     @GET("users")
     suspend fun getUsers(
-        @Query("per_page") perPage: Int,
-        @Query("since") since: Long,
+        @Query("per_page") perPage: Long,
+        @Query("since") since: Int,
     ): List<GithubUserResponse>
 }

@@ -2,6 +2,7 @@ package com.tahn.assignment.di
 
 import com.tahn.assignment.dispatcher.DispatcherProvider
 import com.tahn.assignment.local.database.AppDatabase
+import com.tahn.assignment.local.datastore.PreferencesDataStoreManager
 import com.tahn.assignment.provider.DispatcherProviderImpl
 import com.tahn.assignment.remote.api.NetworkBuilder
 import org.koin.android.ext.koin.androidContext
@@ -28,10 +29,11 @@ private val localModule =
             AppDatabase.getInstance(androidContext())
         }
         single {
+            PreferencesDataStoreManager(androidContext())
         }
     }
 
 val dataModules =
     module {
-        includes(dispatcherModule, remoteModule)
+        includes(dispatcherModule, remoteModule, localModule)
     }

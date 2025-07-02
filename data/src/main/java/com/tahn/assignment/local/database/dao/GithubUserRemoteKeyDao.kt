@@ -9,7 +9,7 @@ import com.tahn.assignment.local.database.entity.GithubUserRemoteKeyEntity
 @Dao
 internal interface GithubUserRemoteKeyDao {
     @Query("SELECT * FROM github_user_remote_key WHERE userId = :userId")
-    suspend fun getRemoteKeyByUserId(userId: Int): GithubUserRemoteKeyEntity?
+    suspend fun getRemoteKeyByUserId(userId: Long): GithubUserRemoteKeyEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(remoteKeys: List<GithubUserRemoteKeyEntity>)

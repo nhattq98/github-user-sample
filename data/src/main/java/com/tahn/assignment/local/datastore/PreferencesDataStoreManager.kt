@@ -24,7 +24,7 @@ internal class PreferencesDataStoreManager(
         }
     }
 
-    val lastUpdateTime: Flow<Long?> =
+    val lastUpdateTime: Flow<Long> =
         context.dataStore.data
-            .map { it[LAST_UPDATE_TIME] }
+            .map { it[LAST_UPDATE_TIME] ?: 0 }
 }

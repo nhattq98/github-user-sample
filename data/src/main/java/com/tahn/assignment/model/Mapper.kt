@@ -5,7 +5,7 @@ import com.tahn.assignment.model.remote.GithubUserResponse
 
 internal fun GithubUserResponse.toEntity(): GithubUserEntity =
     GithubUserEntity(
-        id = id,
+        id = id ?: -1,
         login = login,
         avatarUrl = avatarUrl,
         profileUrl = url,
