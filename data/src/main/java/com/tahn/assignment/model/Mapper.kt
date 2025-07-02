@@ -1,9 +1,9 @@
 package com.tahn.assignment.model
 
-import com.tahn.assignment.model.local.GithubUserEntity
+import com.tahn.assignment.local.database.entity.GithubUserEntity
 import com.tahn.assignment.model.remote.GithubUserResponse
 
-fun GithubUserResponse.toEntity(): GithubUserEntity =
+internal fun GithubUserResponse.toEntity(): GithubUserEntity =
     GithubUserEntity(
         id = id,
         login = login,
@@ -11,7 +11,7 @@ fun GithubUserResponse.toEntity(): GithubUserEntity =
         profileUrl = url,
     )
 
-fun GithubUserEntity.toDomain(): GithubUser =
+internal fun GithubUserEntity.toDomain(): GithubUser =
     GithubUser(
         id = id,
         username = login,

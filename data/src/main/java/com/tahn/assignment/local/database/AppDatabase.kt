@@ -1,11 +1,22 @@
 package com.tahn.assignment.local.database
 
+import android.content.Context
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.tahn.assignment.local.dao.GithubUserDao
-import com.tahn.assignment.model.local.GithubUserEntity
+import com.tahn.assignment.local.database.dao.GithubUserDao
+import com.tahn.assignment.local.database.dao.GithubUserRemoteKeyDao
+import com.tahn.assignment.local.database.entity.GithubUserEntity
 
 @Database(entities = [GithubUserEntity::class], version = 1)
-abstract class AppDatabase : RoomDatabase() {
+internal abstract class AppDatabase : RoomDatabase() {
     abstract fun githubUserDao(): GithubUserDao
+
+    abstract fun githubUserRemoteKeyDao(): GithubUserRemoteKeyDao
+
+    companion object {
+        private const val DATABASE_NAME = "github_user_db"
+
+        fun getInstance(context: Context) = Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME).build()
+    }
 }

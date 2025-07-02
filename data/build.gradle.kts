@@ -64,6 +64,13 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.android)
 
+    // Paging
+    implementation("androidx.paging:paging-runtime-ktx:3.3.6")
+    implementation(libs.androidx.room.paging)
+
+    // Data Store
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
