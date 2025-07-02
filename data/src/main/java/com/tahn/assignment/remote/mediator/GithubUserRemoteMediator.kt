@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalPagingApi::class)
-internal class GithubRemoteMediator(
+internal class GithubUserRemoteMediator(
     private val remoteDataSource: GithubRemoteDataSource,
     private val database: AppDatabase,
     private val dataStore: PreferencesDataStoreManager,

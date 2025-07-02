@@ -65,7 +65,7 @@ dependencies {
     implementation(libs.koin.android)
 
     // Paging
-    implementation("androidx.paging:paging-runtime-ktx:3.3.6")
+//    implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.room.paging)
 
     // Data Store
