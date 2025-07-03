@@ -11,6 +11,7 @@ import com.tahn.assignment.remote.api.NetworkBuilder
 import com.tahn.assignment.repository.GithubUserRepository
 import com.tahn.assignment.repository.GithubUserRepositoryImpl
 import com.tahn.assignment.utils.FlavorUtils
+import com.tahn.assignment.utils.SecureKeyManager
 import com.tahn.assignment.utils.TokenManager
 import com.tahn.assignment.utils.TokenManagerImpl
 import org.koin.android.ext.koin.androidContext
@@ -23,8 +24,9 @@ private val dispatcherModule =
 
 private val remoteModule =
     module {
+        single { SecureKeyManager() }
         single<TokenManager> {
-            TokenManagerImpl()
+            TokenManagerImpl(androidContext(), get())
         }
         single {
             HeaderInterceptor(get())

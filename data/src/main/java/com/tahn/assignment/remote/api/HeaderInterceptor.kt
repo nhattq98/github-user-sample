@@ -19,7 +19,7 @@ internal class HeaderInterceptor(
 
         modifiedRequest.addHeader(
             AUTHORIZATION,
-            "Bearer ${tokenManager.getAccessToken()}",
+            "Bearer ${tokenManager.getMockAccessToken()}",
         )
 
         return chain.proceed(modifiedRequest.build())
