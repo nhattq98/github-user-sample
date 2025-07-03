@@ -12,6 +12,7 @@ import com.tahn.assignment.model.toDomain
 import com.tahn.assignment.remote.GithubRemoteDataSource
 import com.tahn.assignment.remote.mediator.GithubUserRemoteMediator
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 internal class GithubUserRepositoryImpl(
@@ -36,4 +37,10 @@ internal class GithubUserRepositoryImpl(
                 ),
             pagingSourceFactory = { database.githubUserDao().getUserPagingSource() },
         ).flow.map { pagingData -> pagingData.map { it.toDomain() } }
+
+    override fun getGithubUserDetail(username: String) =
+        flow {
+            val response = remoteDataSource.fetchUserDetail(username)
+            emit(response.toDomain())
+        }
 }

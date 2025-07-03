@@ -10,4 +10,6 @@ internal class GithubRemoteDataSourceImpl(
         perPage: Int,
         since: Int,
     ): List<GithubUserResponse> = api.getUsers(perPage, since)
+
+    override suspend fun fetchUserDetail(username: String) = api.getUserDetails(username)
 }
