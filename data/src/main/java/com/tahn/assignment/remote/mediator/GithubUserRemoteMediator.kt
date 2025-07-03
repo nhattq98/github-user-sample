@@ -53,7 +53,7 @@ internal class GithubUserRemoteMediator(
 
         return try {
             val response = remoteDataSource.fetchUsers(perPage = state.config.pageSize, since = since)
-            val users = response.map { it.toEntity() }
+            val users = response.mapNotNull { it.toEntity() }
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {

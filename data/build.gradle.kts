@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kover)
     id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 }
 
@@ -92,6 +93,10 @@ dependencies {
     implementation(libs.androidx.security.crypto)
 
     // Unit test
+    testImplementation(libs.robolectric)
+    testImplementation(libs.core.ktx)
+    testImplementation(libs.androidx.room.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
