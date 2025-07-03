@@ -1,12 +1,15 @@
 package com.tahn.assignment.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -16,9 +19,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -40,16 +45,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
+import com.tahn.assignment.R
 import com.tahn.assignment.model.GithubUser
 import com.tahn.assignment.theme.AppTheme
 
@@ -96,7 +111,7 @@ fun GithubUserListScreen(viewModel: GithubUserListViewModel) {
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
-            TopBar(title = "Github Users") {}
+            TopBar(title = stringResource(R.string.github_users)) {}
         },
     ) { innerPadding ->
         GithubUserContent(
@@ -128,9 +143,9 @@ fun TopBar(
         },
         colors =
             TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
             ),
     )
 }
@@ -156,7 +171,7 @@ fun GithubUserContent(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(8.dp),
+                    .padding(horizontal = 8.dp),
         ) {
             // TODO: safe check in here
             items(users.itemCount) { index ->
@@ -186,41 +201,85 @@ fun GithubUserItem(user: GithubUser) {
     Card(
         modifier =
             Modifier
+                .height(100.dp)
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                 .shadow(2.dp, RoundedCornerShape(12.dp)),
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Row(
             modifier =
                 Modifier
-                    .padding(12.dp)
+                    .padding(8.dp)
                     .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            AsyncImage(
-                model = user.avatarUrl,
-                contentDescription = null,
+            Box(
                 modifier =
                     Modifier
-                        .size(56.dp)
-                        .clip(CircleShape),
-            )
+                        .background(
+                            shape = RoundedCornerShape(8.dp),
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                        ).padding(8.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                AsyncImage(
+                    model = user.avatarUrl,
+                    contentDescription = null,
+                    placeholder = painterResourcePlaceholder(),
+                    modifier =
+                        Modifier
+                            .size(56.dp)
+                            .clip(CircleShape),
+                )
+            }
+
             Spacer(modifier = Modifier.width(12.dp))
-            Column {
-                Text(user.username ?: "Unknown", fontWeight = FontWeight.Bold)
+
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+            ) {
+                Text(
+                    user.username ?: stringResource(R.string.unknown),
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(Modifier.height(4.dp))
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                )
+                Spacer(Modifier.height(4.dp))
                 user.profileUrl?.let {
-                    Text(
-                        text = it,
-                        color = Color.Blue,
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                    LinkAnnotationTest(it)
                 }
             }
         }
     }
+}
+
+@Composable
+fun LinkAnnotationTest(url: String) {
+    val annotatedLinkString: AnnotatedString =
+        remember {
+            buildAnnotatedString {
+                val styleCenter =
+                    SpanStyle(
+                        fontSize = 14.sp,
+                        textDecoration = TextDecoration.Underline,
+                    )
+
+                withLink(LinkAnnotation.Url(url = url)) {
+                    withStyle(
+                        style = styleCenter,
+                    ) {
+                        append(url)
+                    }
+                }
+            }
+        }
+
+    Text(annotatedLinkString, color = MaterialTheme.colorScheme.primary)
 }
 
 @Composable
@@ -241,6 +300,9 @@ fun PagingBottomLoadingIndicator(modifier: Modifier = Modifier) {
         )
     }
 }
+
+@Composable
+fun painterResourcePlaceholder(): Painter = rememberVectorPainter(Icons.Default.Person)
 
 @Preview(showBackground = true)
 @Composable
