@@ -10,7 +10,10 @@ import java.util.concurrent.TimeUnit
 internal object NetworkBuilder {
     private const val TIME_OUT = 60L
 
-    fun buildOkHttpClient(isDebug: Boolean): OkHttpClient {
+    fun buildOkHttpClient(
+        headerInterceptor: HeaderInterceptor,
+        isDebug: Boolean,
+    ): OkHttpClient {
         val loggerInterceptor =
             HttpLoggingInterceptor().apply {
                 if (isDebug) {
@@ -23,6 +26,7 @@ internal object NetworkBuilder {
         return OkHttpClient
             .Builder()
             .addInterceptor(loggerInterceptor)
+            .addInterceptor(headerInterceptor)
             .readTimeout(TIME_OUT, TimeUnit.SECONDS)
             .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
             .writeTimeout(TIME_OUT, TimeUnit.SECONDS)

@@ -52,7 +52,7 @@ internal class GithubUserRemoteMediator(
             }
 
         return try {
-            val response = remoteDataSource.fetchUsers(since, state.config.pageSize)
+            val response = remoteDataSource.fetchUsers(perPage = state.config.pageSize, since = since)
             val users = response.map { it.toEntity() }
 
             database.withTransaction {
@@ -84,7 +84,7 @@ internal class GithubUserRemoteMediator(
 
     companion object {
         const val CACHE_TIMEOUT = 30L
-        private const val START_SINCE = 0L
+        private const val START_SINCE = 0
         const val PAGE_SIZE = 20
     }
 }

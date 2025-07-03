@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GithubUserResponse(
     @SerializedName("id")
-    val id: Long?,
+    val id: Int?,
     @SerializedName("login")
     val login: String?,
     @SerializedName("avatar_url")

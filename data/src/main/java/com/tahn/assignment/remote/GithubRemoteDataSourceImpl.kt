@@ -7,7 +7,7 @@ internal class GithubRemoteDataSourceImpl(
     private val api: GithubApiService,
 ) : GithubRemoteDataSource {
     override suspend fun fetchUsers(
-        perPage: Long,
+        perPage: Int,
         since: Int,
     ): List<GithubUserResponse> = api.getUsers(perPage, since)
 }

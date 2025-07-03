@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 // TODO: change name users -> user
 @Entity(tableName = "github_users")
 internal data class GithubUserEntity(
-    @PrimaryKey val id: Long,
+    @PrimaryKey val id: Int,
     val login: String?,
     val avatarUrl: String?,
     val profileUrl: String?,

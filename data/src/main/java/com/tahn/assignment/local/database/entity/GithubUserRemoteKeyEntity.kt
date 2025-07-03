@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "github_user_remote_key")
 internal data class GithubUserRemoteKeyEntity(
-    @PrimaryKey val userId: Long,
-    val prevKey: Long?,
-    val nextKey: Long?,
+    @PrimaryKey val userId: Int,
+    val prevKey: Int?,
+    val nextKey: Int?,
 )

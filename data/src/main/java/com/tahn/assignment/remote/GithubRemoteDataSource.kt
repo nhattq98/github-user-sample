@@ -4,7 +4,7 @@ import com.tahn.assignment.model.remote.GithubUserResponse
 
 interface GithubRemoteDataSource {
     suspend fun fetchUsers(
-        perPage: Long,
+        perPage: Int,
         since: Int,
     ): List<GithubUserResponse>
 }

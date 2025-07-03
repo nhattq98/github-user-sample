@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.tahn.assignment.GithubUserListScreen
+import com.tahn.assignment.home.GithubUserListScreen
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
