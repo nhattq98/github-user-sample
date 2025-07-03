@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.tahn.assignment.R
+import com.tahn.assignment.home.LinkAnnotationTest
 import com.tahn.assignment.home.painterResourcePlaceholder
 import com.tahn.assignment.model.GithubUserDetail
 import com.tahn.assignment.theme.AppTheme
@@ -87,6 +88,10 @@ fun GithubUserDetailContent(
                 follower = userDetail.followers?.toString(),
                 following = userDetail.following?.toString(),
             )
+
+            userDetail.htmlUrl?.let {
+                UserDescription(url = it)
+            }
         }
     }
 }
@@ -258,6 +263,22 @@ fun InfoItem(
             text = label,
             style = MaterialTheme.typography.labelMedium,
         )
+    }
+}
+
+@Composable
+fun UserDescription(
+    modifier: Modifier = Modifier,
+    url: String,
+) {
+    Column(modifier.fillMaxWidth()) {
+        Text(
+            text = stringResource(R.string.blog),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(8.dp))
+        LinkAnnotationTest(url)
     }
 }
 
