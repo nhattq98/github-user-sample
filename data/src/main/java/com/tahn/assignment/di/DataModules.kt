@@ -57,7 +57,7 @@ private val localModule =
 
 private val repositoryModule =
     module {
-        single<GithubUserRepository> { GithubUserRepositoryImpl(get(), get(), get()) }
+        single<GithubUserRepository> { GithubUserRepositoryImpl(get(), get(), get(), get()) }
     }
 
 val dataModules =

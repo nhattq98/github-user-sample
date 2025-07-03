@@ -1,4 +1,4 @@
-package com.tahn.assignment.utils
+package com.tahn.assignment.result
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

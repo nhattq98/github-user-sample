@@ -9,6 +9,6 @@ data class GithubUserResponse(
     val login: String?,
     @SerializedName("avatar_url")
     val avatarUrl: String?,
-    @SerializedName("url")
+    @SerializedName("html_url")
     val url: String?,
 )

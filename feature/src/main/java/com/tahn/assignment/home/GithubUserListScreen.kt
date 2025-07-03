@@ -1,6 +1,7 @@
 package com.tahn.assignment.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -70,7 +72,10 @@ import com.tahn.assignment.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GithubUserListScreen(viewModel: GithubUserListViewModel) {
+fun GithubUserListScreen(
+    viewModel: GithubUserListViewModel,
+    onNavigateToUserDetail: (username: String) -> Unit,
+) {
     val lazyPagingItems = viewModel.userPagingSource.collectAsLazyPagingItems()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -119,6 +124,7 @@ fun GithubUserListScreen(viewModel: GithubUserListViewModel) {
             pullToRefreshState = pullToRefreshState,
             users = lazyPagingItems,
             uiState = uiState,
+            onNavigateToUserDetail = onNavigateToUserDetail,
         )
     }
 }
@@ -157,6 +163,7 @@ fun GithubUserContent(
     pullToRefreshState: PullToRefreshState,
     users: LazyPagingItems<GithubUser>,
     uiState: GithubUserListUiState,
+    onNavigateToUserDetail: (String) -> Unit,
 ) {
     PullToRefreshBox(
         state = pullToRefreshState,
@@ -173,11 +180,10 @@ fun GithubUserContent(
                     .fillMaxSize()
                     .padding(horizontal = 8.dp),
         ) {
-            // TODO: safe check in here
-            items(users.itemCount) { index ->
+            items(count = users.itemCount) { index ->
                 val user = users[index]
                 user?.let {
-                    GithubUserItem(it)
+                    GithubUserItem(it, onNavigateToUserDetail)
                 }
             }
 
@@ -197,14 +203,22 @@ fun GithubUserContent(
 }
 
 @Composable
-fun GithubUserItem(user: GithubUser) {
+fun GithubUserItem(
+    user: GithubUser,
+    onNavigateToUserDetail: (String) -> Unit,
+) {
     Card(
         modifier =
             Modifier
                 .height(100.dp)
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                .shadow(2.dp, RoundedCornerShape(12.dp)),
+                .shadow(2.dp, RoundedCornerShape(12.dp))
+                .clickable {
+                    user.username?.let {
+                        onNavigateToUserDetail.invoke(it)
+                    }
+                },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
@@ -228,6 +242,7 @@ fun GithubUserItem(user: GithubUser) {
                     model = user.avatarUrl,
                     contentDescription = null,
                     placeholder = painterResourcePlaceholder(),
+                    error = painterResourcePlaceholder(),
                     modifier =
                         Modifier
                             .size(56.dp)
@@ -315,6 +330,6 @@ fun PreviewGithubUserItem() {
             profileUrl = "https://profile.url",
         )
     AppTheme {
-        GithubUserItem(mockUser)
+        GithubUserItem(mockUser, {})
     }
 }

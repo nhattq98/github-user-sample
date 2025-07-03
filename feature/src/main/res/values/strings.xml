@@ -2,4 +2,6 @@
 <resources>
     <string name="unknown">Unknown</string>
     <string name="github_users">Github Users</string>
+    <string name="follower">Follower</string>
+    <string name="following">Following</string>
 </resources>

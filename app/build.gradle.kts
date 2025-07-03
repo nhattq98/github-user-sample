@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "2.0.21"
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kover)
 }
 
@@ -58,6 +58,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":app:shared"))
     implementation(project(":feature"))
     implementation(project(":domain"))
     implementation(project(":data"))
@@ -89,7 +90,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Navigation
-    implementation(libs.androidx.navigation.compose)
-    androidTestImplementation(libs.androidx.navigation.testing)
     implementation(libs.kotlinx.serialization.json)
 }
