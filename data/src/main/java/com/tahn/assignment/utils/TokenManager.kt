@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.map
 
 internal interface TokenManager {
     fun getMockAccessToken(): String
+
+    suspend fun getAccessToken(): String?
 }
 
 private val Context.dataStore by preferencesDataStore("secure_prefs")
@@ -24,6 +26,17 @@ internal class TokenManagerImpl(
     }
 
     override fun getMockAccessToken() = mockAccessToken()
+
+    override suspend fun getAccessToken(): String? {
+        val cacheToken = getToken()
+        return if (cacheToken == null) {
+            val accessToken = mockAccessToken()
+            saveToken(mockAccessToken())
+            accessToken
+        } else {
+            getToken()
+        }
+    }
 
     // Save encrypt token to data store
     suspend fun saveToken(token: String) {

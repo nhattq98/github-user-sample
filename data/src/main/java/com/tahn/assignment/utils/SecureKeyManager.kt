@@ -9,7 +9,13 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
-class SecureKeyManager {
+interface SecureKeyManager {
+    fun encrypt(data: String): String
+
+    fun decrypt(encrypt: String): String
+}
+
+class SecureKeyManagerImpl : SecureKeyManager {
     private val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
     private val keyAlias = "TokenEncryptionKey"
 
@@ -40,30 +46,36 @@ class SecureKeyManager {
 
     private fun getSecretKey(): SecretKey = keyStore.getKey(keyAlias, null) as SecretKey
 
-    fun encrypt(data: String): String {
-        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-        cipher.init(Cipher.ENCRYPT_MODE, getSecretKey())
+    override fun encrypt(data: String): String =
+        try {
+            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+            cipher.init(Cipher.ENCRYPT_MODE, getSecretKey())
 
-        val iv = cipher.iv
-        val encryptedData = cipher.doFinal(data.toByteArray())
+            val iv = cipher.iv
+            val encryptedData = cipher.doFinal(data.toByteArray())
 
-        // Combine IV and encrypted data
-        val combined = iv + encryptedData
-        return Base64.encodeToString(combined, Base64.DEFAULT)
-    }
+            // Combine IV and encrypted data
+            val combined = iv + encryptedData
+            Base64.encodeToString(combined, Base64.DEFAULT)
+        } catch (_: Exception) {
+            ""
+        }
 
-    fun decrypt(encryptedData: String): String {
-        val combined = Base64.decode(encryptedData, Base64.DEFAULT)
+    override fun decrypt(encryptedData: String): String =
+        try {
+            val combined = Base64.decode(encryptedData, Base64.DEFAULT)
 
-        // Extract IV (first 12 bytes for GCM)
-        val iv = combined.sliceArray(0..11)
-        val encrypted = combined.sliceArray(12 until combined.size)
+            // Extract IV (first 12 bytes for GCM)
+            val iv = combined.sliceArray(0..11)
+            val encrypted = combined.sliceArray(12 until combined.size)
 
-        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-        val gcmParameterSpec = GCMParameterSpec(128, iv)
-        cipher.init(Cipher.DECRYPT_MODE, getSecretKey(), gcmParameterSpec)
+            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+            val gcmParameterSpec = GCMParameterSpec(128, iv)
+            cipher.init(Cipher.DECRYPT_MODE, getSecretKey(), gcmParameterSpec)
 
-        val decryptedData = cipher.doFinal(encrypted)
-        return String(decryptedData)
-    }
+            val decryptedData = cipher.doFinal(encrypted)
+            String(decryptedData)
+        } catch (_: Exception) {
+            ""
+        }
 }
