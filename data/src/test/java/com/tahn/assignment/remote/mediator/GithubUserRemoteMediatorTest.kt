@@ -12,8 +12,10 @@ import com.tahn.assignment.local.database.AppDatabase
 import com.tahn.assignment.local.database.dao.GithubUserDao
 import com.tahn.assignment.local.database.dao.GithubUserRemoteKeyDao
 import com.tahn.assignment.local.database.entity.GithubUserEntity
+import com.tahn.assignment.local.database.entity.GithubUserRemoteKeyEntity
 import com.tahn.assignment.local.datastore.PreferencesDataStoreManager
 import com.tahn.assignment.model.remote.GithubUserResponse
+import com.tahn.assignment.model.toEntity
 import com.tahn.assignment.remote.GithubRemoteDataSource
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -124,7 +126,7 @@ class GithubUserRemoteMediatorTest {
             coVerify { remoteKeyDao.clearAll() }
             coVerify { remoteKeyDao.insertAll(any()) }
             assertTrue(result is MediatorResult.Success)
-            assertTrue((result as MediatorResult.Success).endOfPaginationReached == false)
+            assertTrue(!(result as MediatorResult.Success).endOfPaginationReached)
         }
 
     @Test
@@ -142,19 +144,193 @@ class GithubUserRemoteMediatorTest {
         }
 
     @Test
-    fun `load append should Return Success When No LastItem`() =
+    fun `prepend return Success`() =
         runTest {
-            // Arrange
+            // Given
             val pagingState = createPagingState(listOf())
 
-            // Act
+            //  When
+            val result =
+                mediator.load(
+                    LoadType.PREPEND,
+                    pagingState,
+                )
+
+            // Then
+            assertTrue(result is MediatorResult.Success)
+            assertTrue((result as MediatorResult.Success).endOfPaginationReached)
+        }
+
+    // Append logic
+
+    @Test
+    fun `load append should Return Success When no lastItem`() =
+        runTest {
+            // Given
+            val pagingState = createPagingState(listOf())
+
+            // When
             val result = mediator.load(LoadType.APPEND, pagingState)
 
-            // Assert
+            // Then
             assertTrue(result is MediatorResult.Success)
             val success = result as MediatorResult.Success
             assertFalse(success.endOfPaginationReached)
         }
+
+    @Test
+    fun `load append returns Success with endOfPagination true when remoteKey is null`() {
+        runTest {
+            // Given
+            val lastCacheGithubUserEntities =
+                (0..40).toMockGithubUserResponseList().mapNotNull { it.toEntity() }
+
+            val pagingState =
+                PagingState<Int, GithubUserEntity>(
+                    config = PagingConfig(pageSize = GithubUserRemoteMediator.PAGE_SIZE),
+                    anchorPosition = 0,
+                    pages =
+                        listOf(
+                            Page(
+                                data = lastCacheGithubUserEntities,
+                                prevKey = null,
+                                nextKey = null,
+                            ),
+                        ),
+                    leadingPlaceholderCount = 0,
+                )
+
+            coEvery {
+                remoteKeyDao.getRemoteKeyByUserId(lastCacheGithubUserEntities.last().id)
+            } returns null
+
+            // When
+            val result = mediator.load(LoadType.APPEND, pagingState)
+
+            // Then
+            assertTrue(result is MediatorResult.Success)
+            assertTrue((result as MediatorResult.Success).endOfPaginationReached)
+
+            // Verify no fetching/inserting
+            coVerify(exactly = 1) {
+                remoteKeyDao.getRemoteKeyByUserId(lastCacheGithubUserEntities.last().id)
+            }
+            coVerify(exactly = 0) { remoteDataSource.fetchUsers(any(), any()) }
+            coVerify(exactly = 0) { userDao.insertUsers(any()) }
+            coVerify(exactly = 0) { remoteKeyDao.insertAll(any()) }
+        }
+    }
+
+    @Test
+    fun `load append returns should Success with endOfPagination is false and lastItem existed`() {
+        runTest {
+            // Given
+            val githubUserResponseList = (41..60).toMockGithubUserResponseList()
+            val lastCacheGithubUserEntities =
+                (0..40).toMockGithubUserResponseList().mapNotNull { it.toEntity() }
+            val remoteKey =
+                GithubUserRemoteKeyEntity(
+                    userId = lastCacheGithubUserEntities.last().id,
+                    prevKey = null,
+                    nextKey = lastCacheGithubUserEntities.last().id,
+                )
+            val pagingState =
+                PagingState<Int, GithubUserEntity>(
+                    config = PagingConfig(pageSize = GithubUserRemoteMediator.PAGE_SIZE),
+                    anchorPosition = 0,
+                    pages =
+                        listOf(
+                            Page(
+                                data = lastCacheGithubUserEntities,
+                                prevKey = null,
+                                nextKey = null,
+                            ),
+                        ),
+                    leadingPlaceholderCount = 0,
+                )
+
+            coEvery {
+                remoteDataSource.fetchUsers(
+                    since = lastCacheGithubUserEntities.last().id,
+                    perPage = GithubUserRemoteMediator.PAGE_SIZE,
+                )
+            } returns githubUserResponseList
+
+            coEvery {
+                remoteKeyDao.getRemoteKeyByUserId(any())
+            } returns remoteKey
+
+            // When
+            val result =
+                mediator.load(
+                    LoadType.APPEND,
+                    pagingState,
+                )
+
+            // Then
+            assertTrue(result is MediatorResult.Success)
+            assertFalse((result as MediatorResult.Success).endOfPaginationReached)
+            coVerify { userDao.insertUsers(any()) }
+            coVerify { remoteKeyDao.insertAll(any()) }
+        }
+    }
+
+    @Test
+    fun `load append returns Error when remote data source throws exception`() {
+        runTest {
+            // Given
+            val lastCacheGithubUserEntities =
+                (0..40).toMockGithubUserResponseList().mapNotNull { it.toEntity() }
+
+            val remoteKey =
+                GithubUserRemoteKeyEntity(
+                    userId = lastCacheGithubUserEntities.last().id,
+                    prevKey = null,
+                    nextKey = lastCacheGithubUserEntities.last().id,
+                )
+
+            val pagingState =
+                PagingState<Int, GithubUserEntity>(
+                    config = PagingConfig(pageSize = GithubUserRemoteMediator.PAGE_SIZE),
+                    anchorPosition = 0,
+                    pages =
+                        listOf(
+                            Page(
+                                data = lastCacheGithubUserEntities,
+                                prevKey = null,
+                                nextKey = null,
+                            ),
+                        ),
+                    leadingPlaceholderCount = 0,
+                )
+
+            coEvery {
+                remoteKeyDao.getRemoteKeyByUserId(lastCacheGithubUserEntities.last().id)
+            } returns remoteKey
+
+            coEvery {
+                remoteDataSource.fetchUsers(
+                    since = lastCacheGithubUserEntities.last().id,
+                    perPage = GithubUserRemoteMediator.PAGE_SIZE,
+                )
+            } throws RuntimeException("Network error")
+
+            // When
+            val result = mediator.load(LoadType.APPEND, pagingState)
+
+            // Then
+            assertTrue(result is MediatorResult.Error)
+            val error = result as MediatorResult.Error
+            assertTrue(error.throwable is RuntimeException)
+            assertEquals("Network error", error.throwable.message)
+
+            // Verify flow
+            coVerify { remoteKeyDao.getRemoteKeyByUserId(any()) }
+            coVerify { remoteDataSource.fetchUsers(any(), any()) }
+            coVerify(exactly = 0) { userDao.insertUsers(any()) }
+            coVerify(exactly = 0) { remoteKeyDao.insertAll(any()) }
+        }
+    }
 
     @Test
     @After
@@ -172,8 +348,18 @@ class GithubUserRemoteMediatorTest {
             )
         }
 
+    private fun IntRange.toMockGithubUserResponseList(): List<GithubUserResponse> =
+        this.map {
+            GithubUserResponse(
+                id = it,
+                login = "username$it",
+                avatarUrl = "avatarUrl$it",
+                url = "url$it",
+            )
+        }
+
     private fun createPagingState(pages: List<Page<Int, GithubUserEntity>>): PagingState<Int, GithubUserEntity> =
-        PagingState<Int, GithubUserEntity>(
+        PagingState(
             config = PagingConfig(pageSize = GithubUserRemoteMediator.PAGE_SIZE),
             anchorPosition = 0,
             pages = pages,
