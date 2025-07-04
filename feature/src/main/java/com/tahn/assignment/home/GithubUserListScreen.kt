@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -49,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
@@ -65,7 +65,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.tahn.assignment.R
 import com.tahn.assignment.model.GithubUser
 import com.tahn.assignment.theme.AppTheme
@@ -180,7 +183,10 @@ fun GithubUserContent(
                     .fillMaxSize()
                     .padding(horizontal = 8.dp),
         ) {
-            items(count = users.itemCount) { index ->
+            items(
+                count = users.itemCount,
+                key = users.itemKey { it.id },
+            ) { index ->
                 val user = users[index]
                 user?.let {
                     GithubUserItem(it, onNavigateToUserDetail)
@@ -207,6 +213,19 @@ fun GithubUserItem(
     user: GithubUser,
     onNavigateToUserDetail: (String) -> Unit,
 ) {
+    val context = LocalContext.current
+
+    val imageRequest =
+        remember(user.avatarUrl) {
+            ImageRequest
+                .Builder(context)
+                .data(user.avatarUrl)
+                .crossfade(true)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .memoryCachePolicy(CachePolicy.ENABLED)
+                .build()
+        }
+
     Card(
         modifier =
             Modifier
@@ -239,7 +258,7 @@ fun GithubUserItem(
                 contentAlignment = Alignment.Center,
             ) {
                 AsyncImage(
-                    model = user.avatarUrl,
+                    model = imageRequest,
                     contentDescription = null,
                     placeholder = painterResourcePlaceholder(),
                     error = painterResourcePlaceholder(),
