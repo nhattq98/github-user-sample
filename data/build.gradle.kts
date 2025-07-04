@@ -93,6 +93,7 @@ dependencies {
     implementation(libs.androidx.security.crypto)
 
     // Unit test
+    testImplementation(libs.mockk)
     testImplementation(libs.robolectric)
     testImplementation(libs.core.ktx)
     testImplementation(libs.androidx.room.testing)
