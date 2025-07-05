@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -31,9 +32,11 @@ android {
 dependencies {
     // Navigation
     api(libs.androidx.navigation.compose)
-    api(libs.androidx.navigation.testing)
 
     // Kotlin Serialization
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.androidx.material.icons.extended)
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

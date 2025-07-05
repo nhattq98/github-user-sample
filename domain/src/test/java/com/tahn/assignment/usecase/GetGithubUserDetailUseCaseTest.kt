@@ -11,7 +11,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-internal class GetGithubUserDetailUseCaseUnitTest {
+internal class GetGithubUserDetailUseCaseTest {
     private lateinit var repository: GithubUserRepository
     private lateinit var getGithubUserDetailUseCase: GetGithubUserDetailUseCase
 

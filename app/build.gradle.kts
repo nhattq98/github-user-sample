@@ -73,6 +73,34 @@ android {
     buildFeatures {
         compose = true
     }
+
+    kover {
+        reports {
+            filters {
+                excludes {
+                    classes(
+                        "*.**ComposableSingletons*",
+                        "*.**Kt\$*",
+                        "*.**Kt",
+                        "*androidx.compose.*",
+                        "*.*BuildConfig*",
+                        "*.*Activity*",
+                        "*.*Application*",
+                        "*.**AppDatabase*",
+                        "*.**UiState*",
+                        "*.FlavorUtils",
+                        "*.SecureKeyManager*",
+                        "*.SimpleTokenEncryptor*",
+                        "*.DispatcherProviderImpl",
+                    )
+                    packages(
+                        "com.tahn.assignment.di",
+                        "com.tahn.assignment.nav**",
+                    )
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -80,6 +108,10 @@ dependencies {
     implementation(project(":feature"))
     implementation(project(":domain"))
     implementation(project(":data"))
+    kover(project(":app:shared"))
+    kover(project(":feature"))
+    kover(project(":domain"))
+    kover(project(":data"))
 
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)
