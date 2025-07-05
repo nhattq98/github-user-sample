@@ -70,6 +70,7 @@ class GithubUserRemoteMediatorTest {
         mediator = GithubUserRemoteMediator(remoteDataSource, database, dataStore)
     }
 
+    // initialize test
     @Test
     fun `initialize returns SKIP_INITIAL_REFRESH when cache is valid`() =
         runTest {
@@ -96,6 +97,7 @@ class GithubUserRemoteMediatorTest {
             assertEquals(InitializeAction.LAUNCH_INITIAL_REFRESH, result)
         }
 
+    // refresh test
     @Test
     fun `refresh returns Success`() =
         runTest {
@@ -143,6 +145,7 @@ class GithubUserRemoteMediatorTest {
             assertTrue(result is MediatorResult.Error)
         }
 
+    // prepend test
     @Test
     fun `prepend return Success`() =
         runTest {
@@ -161,8 +164,7 @@ class GithubUserRemoteMediatorTest {
             assertTrue((result as MediatorResult.Success).endOfPaginationReached)
         }
 
-    // Append logic
-
+    // append test
     @Test
     fun `load append should Return Success When no lastItem`() =
         runTest {

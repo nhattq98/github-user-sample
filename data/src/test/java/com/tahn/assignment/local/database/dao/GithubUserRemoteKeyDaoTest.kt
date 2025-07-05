@@ -39,15 +39,21 @@ class GithubUserRemoteKeyDaoTest {
     @Test
     fun insertAndGetRemoteKey_shouldReturnCorrectData() =
         runTest {
-            val remoteKey = GithubUserRemoteKeyEntity(userId = 1, prevKey = null, nextKey = 2)
+            val expectedRemoteKey =
+                GithubUserRemoteKeyEntity(userId = 1, prevKey = null, nextKey = 2)
+            val remoteKey =
+                listOf(
+                    expectedRemoteKey,
+                    GithubUserRemoteKeyEntity(userId = 2, prevKey = null, nextKey = 3),
+                )
 
-            dao.insertAll(listOf(remoteKey))
+            dao.insertAll(remoteKey)
             val result = dao.getRemoteKeyByUserId(1)
 
             assertNotNull(result)
-            assertEquals(remoteKey.userId, result?.userId)
-            assertEquals(remoteKey.prevKey, result?.prevKey)
-            assertEquals(remoteKey.nextKey, result?.nextKey)
+            assertEquals(expectedRemoteKey.userId, result?.userId)
+            assertEquals(expectedRemoteKey.prevKey, result?.prevKey)
+            assertEquals(expectedRemoteKey.nextKey, result?.nextKey)
         }
 
     @Test
