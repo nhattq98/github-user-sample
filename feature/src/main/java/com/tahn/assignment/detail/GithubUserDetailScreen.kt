@@ -73,7 +73,7 @@ fun GithubUserDetailScreen(
 
     Scaffold(
         topBar = {
-            TopBar(title = "User Detail") {
+            TopBar(title = stringResource(R.string.user_detail)) {
                 navigateBack.invoke()
             }
         },
@@ -184,7 +184,8 @@ fun UserProfileCard(
                         .background(
                             shape = RoundedCornerShape(8.dp),
                             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                        ).padding(8.dp),
+                        )
+                        .padding(8.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 AsyncImage(
