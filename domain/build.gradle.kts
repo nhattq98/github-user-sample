@@ -37,5 +37,18 @@ dependencies {
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+//    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Testing
+//    testImplementation(libs.robolectric)
+//    testImplementation(libs.core.ktx)
+//    testImplementation(libs.androidx.room.testing)
+//    testImplementation(libs.kotlinx.coroutines.test)
+//    testImplementation(libs.junit)
+//    androidTestImplementation(libs.androidx.junit)
+//    androidTestImplementation(libs.androidx.espresso.core)
+//    testImplementation(libs.paging.test)
+//    testImplementation(libs.androidx.paging.common)
 }
