@@ -3,6 +3,7 @@ package com.tahn.assignment.di
 import com.tahn.assignment.dispatcher.DispatcherProvider
 import com.tahn.assignment.local.database.AppDatabase
 import com.tahn.assignment.local.datastore.PreferencesDataStoreManager
+import com.tahn.assignment.local.datastore.userPrefDataStore
 import com.tahn.assignment.provider.DispatcherProviderImpl
 import com.tahn.assignment.remote.GithubRemoteDataSource
 import com.tahn.assignment.remote.GithubRemoteDataSourceImpl
@@ -52,7 +53,7 @@ private val localModule =
             AppDatabase.getInstance(androidContext())
         }
         single {
-            PreferencesDataStoreManager(androidContext())
+            PreferencesDataStoreManager(androidContext().userPrefDataStore)
         }
     }
 

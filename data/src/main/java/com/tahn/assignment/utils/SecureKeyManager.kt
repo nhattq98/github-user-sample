@@ -9,13 +9,13 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
-interface SecureKeyManager {
+internal interface SecureKeyManager {
     fun encrypt(data: String): String
 
-    fun decrypt(encrypt: String): String
+    fun decrypt(encryptedData: String): String
 }
 
-class SecureKeyManagerImpl : SecureKeyManager {
+internal class SecureKeyManagerImpl : SecureKeyManager {
     private val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
     private val keyAlias = "TokenEncryptionKey"
 

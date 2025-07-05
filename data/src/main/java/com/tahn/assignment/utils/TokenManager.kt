@@ -13,7 +13,7 @@ internal interface TokenManager {
     suspend fun getAccessToken(): String?
 }
 
-private val Context.dataStore by preferencesDataStore("secure_prefs")
+private val Context.securePrefsDataStore by preferencesDataStore("secure_prefs")
 
 internal class TokenManagerImpl(
     private val context: Context,
@@ -41,14 +41,14 @@ internal class TokenManagerImpl(
     // Save encrypt token to data store
     suspend fun saveToken(token: String) {
         val encryptedToken = keyStoreManager.encrypt(token)
-        context.dataStore.edit { preferences ->
+        context.securePrefsDataStore.edit { preferences ->
             preferences[TOKEN_KEY] = encryptedToken
         }
     }
 
     suspend fun getToken(): String? {
         val encryptedToken =
-            context.dataStore.data
+            context.securePrefsDataStore.data
                 .map { it[TOKEN_KEY] }
                 .first()
 
@@ -56,7 +56,7 @@ internal class TokenManagerImpl(
     }
 
     suspend fun clearToken() {
-        context.dataStore.edit { preferences ->
+        context.securePrefsDataStore.edit { preferences ->
             preferences.remove(TOKEN_KEY)
         }
     }

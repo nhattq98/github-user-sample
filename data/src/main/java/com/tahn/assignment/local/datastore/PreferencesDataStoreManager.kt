@@ -1,29 +1,32 @@
 package com.tahn.assignment.local.datastore
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.tahn.assignment.local.datastore.PreferencesDataStoreManager.Companion.DATA_STORE_NAME
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+internal val Context.userPrefDataStore by preferencesDataStore(name = DATA_STORE_NAME)
+
 internal class PreferencesDataStoreManager(
-    private val context: Context,
+    private val dataStore: DataStore<Preferences>,
 ) {
     companion object {
-        private const val DATA_STORE_NAME = "app_preferences"
+        const val DATA_STORE_NAME = "app_preferences"
         val LAST_UPDATE_TIME = longPreferencesKey("last_update_time")
     }
 
-    private val Context.dataStore by preferencesDataStore(name = DATA_STORE_NAME)
-
     suspend fun setLastUpdateTime(timestamp: Long) {
-        context.dataStore.edit { prefs ->
+        dataStore.edit { prefs ->
             prefs[LAST_UPDATE_TIME] = timestamp
         }
     }
 
     val lastUpdateTime: Flow<Long> =
-        context.dataStore.data
+        dataStore.data
             .map { it[LAST_UPDATE_TIME] ?: 0 }
 }

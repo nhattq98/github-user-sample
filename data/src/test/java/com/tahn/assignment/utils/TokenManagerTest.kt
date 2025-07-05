@@ -53,15 +53,18 @@ class TokenManagerImplTest {
     @Test
     fun `clearToken should remove saved token`() =
         runTest {
+            // Given
             val token = "to_clear"
             val encrypted = "enc_to_clear"
 
             coEvery { mockSecureKeyManager.encrypt(token) } returns encrypted
             coEvery { mockSecureKeyManager.decrypt(encrypted) } returns token
 
+            // When
             tokenManager.saveToken(token)
             tokenManager.clearToken()
 
+            // Then
             val result = tokenManager.getToken()
             assertNull(result)
         }

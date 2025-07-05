@@ -3,7 +3,7 @@ package com.tahn.assignment.utils
 import android.util.Base64
 import kotlin.experimental.xor
 
-object SimpleTokenEncryptor {
+internal object SimpleTokenEncryptor {
     private const val SECRET: String = "tahn"
 
     fun encrypt(token: String): String {
