@@ -87,7 +87,7 @@ fun GithubUserListScreen(
     LaunchedEffect(lazyPagingItems.loadState) {
         val loadState = lazyPagingItems.loadState
 
-        when (val refreshState = loadState.refresh) {
+        when (loadState.refresh) {
             is LoadState.Loading -> {
                 if (!uiState.isRefreshing) {
                     viewModel.setRefreshing(true)
@@ -111,7 +111,6 @@ fun GithubUserListScreen(
         error?.let {
             snackbarHostState.showSnackbar(
                 message = it.error.localizedMessage ?: "Unknown error",
-                actionLabel = "Retry",
             )
         }
     }
@@ -231,8 +230,9 @@ fun GithubUserItem(
             Modifier
                 .height(100.dp)
                 .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                .shadow(2.dp, RoundedCornerShape(12.dp))
+                .shadow(2.dp)
                 .clickable {
                     user.username?.let {
                         onNavigateToUserDetail.invoke(it)

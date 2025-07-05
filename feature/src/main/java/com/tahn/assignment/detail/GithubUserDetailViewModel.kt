@@ -10,15 +10,17 @@ import com.tahn.assignment.nav.UserDetail
 import com.tahn.assignment.result.Result
 import com.tahn.assignment.result.asResult
 import com.tahn.assignment.usecase.GetGithubUserDetailUseCase
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 data class GithubUserDetailUiState(
     val userDetail: GithubUserDetail? = null,
     val isLoading: Boolean = false,
-    val errorMessage: String? = null,
 )
 
 class GithubUserDetailViewModel(
@@ -27,6 +29,9 @@ class GithubUserDetailViewModel(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val userDetail: UserDetail = savedStateHandle.toRoute<UserDetail>()
+
+    private val _snackbarMessage = MutableSharedFlow<String>()
+    val snackbarMessage: SharedFlow<String> = _snackbarMessage
 
     val githubUserDetailUiState: StateFlow<GithubUserDetailUiState> =
         getGithubUserDetailUserDetailUseCase(userDetail.username)
@@ -48,10 +53,17 @@ class GithubUserDetailViewModel(
                     isLoading = false,
                 )
 
-            is Result.Error ->
+            is Result.Error -> {
+                showError(result.exception.message.toString())
                 GithubUserDetailUiState(
-                    errorMessage = result.exception.message,
                     isLoading = false,
                 )
+            }
         }
+
+    private fun showError(message: String) {
+        viewModelScope.launch {
+            _snackbarMessage.emit(message)
+        }
+    }
 }

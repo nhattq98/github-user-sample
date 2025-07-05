@@ -15,7 +15,6 @@ android {
         minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildFeatures {
@@ -33,19 +32,6 @@ android {
         create("prod") {
             buildConfigField("String", "BASE_URL", "\"https://api.github.com\"")
             buildConfigField("String", "FLAVOR", "\"prod\"")
-        }
-    }
-
-    buildTypes {
-        debug {
-            isMinifyEnabled = false
-        }
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
         }
     }
 
