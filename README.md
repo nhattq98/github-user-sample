@@ -43,15 +43,21 @@ This Android project allows administrators to browse GitHub users and view detai
 
 - **Retrofit**: For making API requests to the [GitHub Users API](https://api.github.com/users?per_page=20&since=100)
 
-### 🗃️ Local Data Storage
+### Local Data Storage
 
 - **Room Database**: Stores paginated GitHub user data locally
 - **DataStore**: Used to persist small data (e.g., token, flags) in a type-safe, asynchronous way
 - **Android Keystore**: Secures sensitive data such as access tokens using encrypted keys
 
-### 🧪 Testing
+### Testing
 
 - **JUnit**: For unit testing business logic and ViewModels
 - **MockK**: For mocking dependencies and verifying interactions
+- **Kover**: For measuring code coverage in Kotlin projects
 
 ---
+
+⚠️ **Warning**
+> If the app cannot call the GitHub API using the mock access token,  
+> please input your **GitHub personal access token** in the `mockAccessToken()` function manually.  
+> This is required for authenticated requests to avoid rate limits.
