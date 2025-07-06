@@ -68,8 +68,6 @@ class GithubUserListViewModelTest {
     @Test
     fun `setRefreshing true should update isRefreshing and clear errorMessage`() =
         runTest {
-            viewModel = GithubUserListViewModel(getGithubUsersPagingUseCase, dispatcherProvider)
-
             viewModel.setError("Some error")
             viewModel.setRefreshing(true)
 
@@ -132,26 +130,22 @@ class GithubUserListViewModelTest {
         override fun onInserted(
             position: Int,
             count: Int,
-        ) {
-        }
+        ) = Unit
 
         override fun onRemoved(
             position: Int,
             count: Int,
-        ) {
-        }
+        ) = Unit
 
         override fun onMoved(
             fromPosition: Int,
             toPosition: Int,
-        ) {
-        }
+        ) = Unit
 
         override fun onChanged(
             position: Int,
             count: Int,
             payload: Any?,
-        ) {
-        }
+        ) = Unit
     }
 }
