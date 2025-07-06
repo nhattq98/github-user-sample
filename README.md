@@ -41,7 +41,7 @@ This Android project allows administrators to browse GitHub users and view detai
 
 ### Networking
 
-- **Retrofit**: For making API requests to the [GitHub Users API](https://api.github.com/users?per_page=20&since=100)
+- **Retrofit**: For making API requests to the [GitHub Users API](https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28)
 
 ### Local Data Storage
 
@@ -56,6 +56,10 @@ This Android project allows administrators to browse GitHub users and view detai
 - **Kover**: For measuring code coverage in Kotlin projects
 
 ---
+
+### Preview
+![App Screenshot](assets/home_ui.png)
+![App Screenshot](assets/home_detail.png)
 
 ⚠️ **Warning**
 > If the app cannot call the GitHub API using the mock access token,  
