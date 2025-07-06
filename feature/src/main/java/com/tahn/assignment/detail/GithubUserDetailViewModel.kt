@@ -28,13 +28,15 @@ class GithubUserDetailViewModel(
     dispatcherProvider: DispatcherProvider,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val userDetail: UserDetail = savedStateHandle.toRoute<UserDetail>()
+    private val _userDetail: UserDetail = savedStateHandle.toRoute<UserDetail>()
+    val userDetail: UserDetail
+        get() = _userDetail
 
     private val _snackbarMessage = MutableSharedFlow<String>()
     val snackbarMessage: SharedFlow<String> = _snackbarMessage
 
     val githubUserDetailUiState: StateFlow<GithubUserDetailUiState> =
-        getGithubUserDetailUserDetailUseCase(userDetail.username)
+        getGithubUserDetailUserDetailUseCase(_userDetail.username)
             .asResult()
             .map(::toGithubUserDetailUiState)
             .stateIn(

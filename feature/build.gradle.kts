@@ -63,4 +63,8 @@ dependencies {
     // Testing
     testImplementation(libs.junit)
     debugImplementation(libs.ui.tooling)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.robolectric)
 }
